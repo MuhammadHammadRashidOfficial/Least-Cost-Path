@@ -659,11 +659,6 @@ class maze:
                         l=self._canvas.create_line(y, x + w, y + w, x + w,width=2,fill=theme.value[1],tag='line')
 
     def _redrawCell(self,x,y,theme):
-        '''
-        To redraw a cell.
-        With Full sized square agent, it can overlap with maze lines
-        So the cell is redrawn so that cell lines are on top
-        '''
         w=self._cell_width
         cell=(x,y)
         x=x*w-w+self._LabWidth
@@ -694,19 +689,9 @@ class maze:
         self._win.bind('<d>',a.moveRight)
         self._win.bind('<w>',a.moveUp)
         self._win.bind('<s>',a.moveDown)
-
-
-
     _tracePathList=[]
     def _tracePathSingle(self,a,p,kill,showMarked,delay):
-        '''
-        An interal method to help tracePath method for tracing a path by agent.
-        '''
-        
         def killAgent(a):
-            '''
-            if the agent should be killed after it reaches the Goal or completes the path
-            '''
             for i in range(len(a._body)):
                 self._canvas.delete(a._body[i])
             self._canvas.delete(a._head) 
@@ -727,7 +712,6 @@ class maze:
             if kill:
                 self._win.after(300, killAgent,a)         
             return
-        # If path is provided as Dictionary
         if(type(p)==dict):
             if(len(p)==0):
                 del maze._tracePathList[0][0][a]
@@ -768,7 +752,6 @@ class maze:
                     del p[(a.x,a.y)]
             else:    
                 a.x,a.y=p[(a.x,a.y)]
-        # If path is provided as String
         if (type(p)==str):
             if(len(p)==0):
                 del maze._tracePathList[0][0][a]
@@ -823,7 +806,6 @@ class maze:
                 elif move=='A':
                     a._RCCW()
                 p=p[1:]
-        # If path is provided as List
         if (type(p)==list):
             if(len(p)==0):
                 del maze._tracePathList[0][0][a]
@@ -876,18 +858,11 @@ class maze:
         self._win.after(delay, self._tracePathSingle,a,p,kill,showMarked,delay)    
 
     def tracePath(self,d,kill=False,delay=300,showMarked=False):
-        '''
-        A method to trace path by agent
-        You can provide more than one agent/path details
-        '''
         self._tracePathList.append((d,kill,delay))
         if maze._tracePathList[0][0]==d: 
             for a,p in d.items():
                 if a.goal!=(a.x,a.y) and len(p)!=0:
                     self._tracePathSingle(a,p,kill,showMarked,delay)
     def run(self):
-        '''
-        Finally to run the Tkinter Main Loop
-        '''
         self._win.mainloop()
 
